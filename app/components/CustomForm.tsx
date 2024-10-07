@@ -1,6 +1,7 @@
 import { Form } from "@remix-run/react"
-import Button from "./Button"
+import Button from "./CustomButton"
 import FormField from "./FormField"
+import CustomButton from "./CustomButton"
 
 interface CustomFormProps {
     id:string
@@ -17,7 +18,7 @@ export default ({id, fields, buttons, action}: CustomFormProps) => {
                 {fields.map((field:any, key: number) => FormField({...field, key}))}
             </section>
             <section className="form__buttons-section">
-                {buttons.map((btn: any, key: number) => Button({...btn, key}))}
+                {buttons.map((btn: any, key: number) => CustomButton({...btn, key}))}
             </section>
         </Form>
     )

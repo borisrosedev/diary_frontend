@@ -14,7 +14,9 @@ export default function editSymbolicObject(obj: any, symbol: string = 'Symbol(st
             field.value = field.value.toLowerCase()
           }
         }
+        return {obj, symbol: stateSymbol}
       }
       
-     return { ...obj }
+      return
+    
 }

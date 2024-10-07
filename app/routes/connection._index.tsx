@@ -1,32 +1,41 @@
-import { ActionFunctionArgs } from "@remix-run/node";
-import { Link, redirect } from "@remix-run/react"
-import CustomForm from "~/components/CustomForm"
+import { Link, redirect, useNavigate, useNavigation } from "@remix-run/react"
+import { useState } from "react";
+import ClientSideForm from "~/components/ClientSideForm";
 import AuthService from "~/services/auth.service";
-import UsersService from "~/services/users.service";
-
-
-// ACTION ==========================
-export const action = async ({
-  request,
-}: ActionFunctionArgs) => {
-  const formData = await request.formData();
-  const response = await AuthService.login(formData as any)
-  if(response.id){
-    return redirect(`/dashboard/${response.id}`);
-  }
-  return response
-
-};
-// END OF ACTION ==========================
-
-
+import WebsocketService from "~/services/websocket.service";
 
 
 export default function ConnectionLogin () {
 
+  const [formFields, setFormFields] = useState({}) as any
+  const navigate = useNavigate()
+  const [errorMessage, setErrorMessage] = useState("")
+
+  const submitHandler = async(e:any) => {
+    e.preventDefault()
+    console.log("handling")
+    const response = await AuthService.login(formFields)
+    if(response.id) {
+      const wsService = WebsocketService.getInstance()
+      wsService.sendEvent("users", {message: "➕ 1 utilisateur connecté"})
+      navigate(`/dashboard/${response.id}`)
+    } else {
+        setErrorMessage("⛔️ Erreur lors de la connexion : " + response.message)
+    }
+  }
+
+  const resetHandler = (e:any) => {
+    setFormFields({})
+  }
+
+  const inputHandler = (e:any, name:string) => {
+    setFormFields({ ...formFields, [name]: e.target.value})
+  }
+
+  
   const formData = {
       id: "login-form",
-      action : "/conection",
+      action : "",
       fields: [
         {
           id: "email",
@@ -39,6 +48,7 @@ export default function ConnectionLogin () {
       ],
       buttons: [
         {
+          id: "login-submit-button",
           type: "submit",
           styles: "button form-button",
           textContent: "Valider"
@@ -56,8 +66,9 @@ export default function ConnectionLogin () {
   return (
     <main className="app-main login__main">
       <section className="login__form-section">
-        <CustomForm id={formData.id} fields={formData.fields} buttons={formData.buttons} action={formData.action} />
+        <ClientSideForm id={formData.id} fields={formData.fields} buttons={formData.buttons} submitHandler={submitHandler}  inputHandler={inputHandler} resetHandler={resetHandler} />
         <small>Pas encore inscrit(e) - Cliquez <Link to={"/connection/register"}>ici</Link></small>
+        {errorMessage ? <small>{errorMessage} </small> : ""}
       </section>
     </main> 
   )

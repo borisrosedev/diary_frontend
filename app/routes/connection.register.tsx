@@ -1,8 +1,11 @@
 import { ActionFunctionArgs } from "@remix-run/node";
 import { Link, redirect } from "@remix-run/react"
+import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 import invariant from "tiny-invariant";
 import CustomForm from "~/components/CustomForm"
 import UsersService from "~/services/users.service";
+import WebsocketService from "~/services/websocket.service";
+import convertSymbolicObject from "~/utils/convertSymbolicObject";
 
 
 
@@ -12,8 +15,12 @@ import UsersService from "~/services/users.service";
     request,
   }: ActionFunctionArgs) => {
     const formData = await request.formData();
-    const response = await UsersService.createOne(formData as any)
+    const response = await UsersService.createOne(formData)
     if(response.insertedId){
+      const wsService = WebsocketService.getInstance()
+      console.log("---------------1--------------")
+      wsService.sendEvent("users",`Bienvenue au nouveau membre de la communauté`)
+      console.log("--------------2---------------")
       return redirect(`/connection`);
     }
     return response

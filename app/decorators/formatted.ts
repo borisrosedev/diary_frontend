@@ -16,7 +16,6 @@ export function formatted(target: Object,
 export function format(context:string){
 
     return function(target: any, propertyName: string, descriptor: TypedPropertyDescriptor<any>) {
-        console.log("propertyName", propertyName)
         let method = descriptor.value!;
 
         descriptor.value = function (...argv: any[]) {
@@ -25,7 +24,9 @@ export function format(context:string){
             
             for(const index of parametersToFormatIndexes){ 
                 const valuesArray = {...argv[index]} 
-                argv[index] = editSymbolicObject(valuesArray, "Symbol(state)", "email", "lower")  
+                const result = editSymbolicObject(valuesArray, "Symbol(state)", "email", "lower") as { obj: any, symbol: Symbol}
+                argv[index]["0"] = result
+                console.log("argv", argv)
             } 
             return method.apply(this, argv);
         };

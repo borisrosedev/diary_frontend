@@ -12,6 +12,8 @@ html {
 body {
     margin: 0;
     background-color: #000;
+    display: flex;
+    flex-direction: column;
 }
 
 ul, li {
@@ -92,6 +94,8 @@ figure {
     background-position: center;
 
 }
+
+
 
 .home__main {
     display: flex;
@@ -213,4 +217,182 @@ figure {
         padding-inline: 2px;
     }
    
+}
+
+#notification-aside {
+    position: fixed;
+    bottom: 10px;
+
+    align-self: center;
+    z-index: 20;
+
+
+    p {
+        padding: 8px 30px;
+        border-radius: 5px;
+        opacity: 0;
+        animation: show-up-and-right 5000ms ease-in-out forwards;
+    }
+    
+    p.positive {
+        background-color: #ffc0cb;
+        
+        
+    }
+
+    p.negative {
+        background-color: rgb(255, 129, 154);
+    }
+}
+
+.logout-button {
+    background-color: transparent;
+    border: none;
+    font-size: 14px;
+    color: #fff;
+    transition: all ease-in-out 300ms;
+    &:hover {
+        cursor: pointer;
+        color: #d87093;
+    }
+    
+}
+
+.button {
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+@keyframes show-up-and-right {
+    0% {
+        opacity: 0;
+        transform: translateY(200px);
+    }
+
+    25% {
+     opacity: 1;
+     transform: translateY(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(0);  
+    }
+
+    75% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+
+    100% {
+        opacity: 0;
+        transform: translate(200px);
+    }
+}
+
+
+
+
+
+.dashboard__main {
+    
+    flex-direction: column;
+
+    .dashboard__section {
+        height: 100%;
+        display: flex;
+        
+        h1 {
+            font-size: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+        }
+
+        & > section {
+
+            padding: 10px;
+            width: 50%;
+            height: 100%;
+        }
+    }
+    
+
+}
+
+
+.dashboard__photo-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard__profile-form-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .dashboard__profile-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+
+        & > section {
+            display: flex;
+            width: 100%;
+        }
+
+        & > section:first-of-type {
+       
+            flex-direction: column;
+            
+        }
+    
+        article {
+            margin-block: 10px;
+        }
+        input {
+            outline: 2px #fff solid;
+            padding: 10px;
+            width: 100%;
+            border: none;
+    
+            &:focus {
+                outline: 2px palevioletred solid;
+            }
+    
+        }
+    
+    
+        .dashboard-form__buttons-section {
+            display: flex;
+            justify-content: space-between;
+            margin-block: 10px;
+        }
+    
+        button {
+            padding: 8px 30px;
+            background-color: beige;
+            border: solid #fff 2px;
+            border-radius: 5px;
+            &:hover, &:active, &:focus {
+                border: solid #d87093 2px;
+                outline: none;
+            }
+        }
+    }
+
+   
+}
+
+
+.file-input {
+    padding: 10px;
 }

@@ -5,9 +5,11 @@ import {
     Links,
     Meta,
     Outlet,
+    redirect,
     Scripts,
     ScrollRestoration,
     useLoaderData,
+    useNavigate,
   } from "@remix-run/react";
 
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
@@ -15,11 +17,11 @@ import type { LinksFunction, MetaFunction } from "@remix-run/node";
 
 import appStylesHref from "./app.css?url";
 import logo from "/diary-logo.webp"
-import invariant from "tiny-invariant";
 import CustomStorage from "./services/custom-storage.service";
 import AuthService from "./services/auth.service";
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import WebsocketService from "./services/websocket.service";
+import NotificationService from "./services/notification.service";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStylesHref },
@@ -29,18 +31,31 @@ export const links: LinksFunction = () => [
 export default function App() {
 
     const [isConnected, setIsConnected] = useState<boolean>(false)
+  
+    const navigate = useNavigate()
+
+    const logoutHandler = () => {
+      AuthService.logout()
+      const wsService = WebsocketService.getInstance()
+      wsService.sendEvent("users", {message: "Un utilisateur s'est déconnecté"})
+      setTimeout(() => {
+        navigate("/connection")
+      }, 4000)
+      
+    }
+
+    
     useEffect(() => {
 
-      const socket = io("http://localhost:3002")
-      socket.emit("users", "new user", (val: any) => {
-        console.log("val", val);
-      });
-      
       const user = CustomStorage.getSpecificItem("user")
+      NotificationService.getInstance()
       if(user && user.id && user.token) {
         setIsConnected(true)
+        
       } else {
+        AuthService.logout()
         setIsConnected(false)
+        redirect("/")
       }
      
     }, [])
@@ -64,10 +79,8 @@ export default function App() {
             <nav>
               <ul>
                 <li>
-                  {!isConnected ? <Link to={"/connexion"}>Connection</Link>
-                    : <button onClick={() => {
-                      AuthService.logout()
-                    }} > Déconnexion </button>
+                  {!isConnected ? <Link to={"/connection"}>Connection</Link>
+                    : <button className="logout-button" onClick={logoutHandler} > Déconnexion </button>
                   }
                 </li>
               </ul>
@@ -75,6 +88,7 @@ export default function App() {
           </header>
           
           <Outlet />
+          <aside id="notification-aside"></aside>
           <ScrollRestoration />
           <Scripts />
         </body>
