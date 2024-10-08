@@ -8,8 +8,9 @@ import CustomFilesService from "~/services/custom-files.service";
 import CustomStorage from "~/services/custom-storage.service";
 import UsersService from "~/services/users.service";
 import WebsocketService from "~/services/websocket.service";
-
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
+import placeholderProfile from "/placeholder-profile.webp"
 
 const DashboardIndex = () => {
     const params = useParams()
@@ -19,6 +20,7 @@ const DashboardIndex = () => {
     const [counter, setCounter] = useState(0)
     const [errorMessage, setErrorMessage] = useState("")
     const [fileFormData, setFileFormData] = useState() as any
+    const [showFileResetButton, setShowFileResetButton] = useState<boolean>(false)
     useEffect(() => {
 
         if(counter < 1){
@@ -50,6 +52,9 @@ const DashboardIndex = () => {
 
     const submitPhotoFormHandler = (e: any) => {
         e.preventDefault()
+        if(fileFormData == null){
+            return 
+        }
         CustomFilesService.postOne(fileFormData)
     }
 
@@ -58,8 +63,13 @@ const DashboardIndex = () => {
         const formData = new FormData()  
         formData.append("singleFile", e.target.files[0])
         setFileFormData(formData)
+        setShowFileResetButton(true)
     }
 
+    const resetFileHandler = () => {
+        setFileFormData(null)
+        setShowFileResetButton(false)
+    }
 
 
     return(
@@ -71,9 +81,18 @@ const DashboardIndex = () => {
                     <h1>Bienvenue {user.firstname.charAt(0).toUpperCase()}{user.firstname.slice(1)} </h1> 
                     <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eveniet sequi praesentium nihil debitis incidunt, harum fuga beatae maiores dolores maxime consequuntur magnam molestias assumenda nesciunt quisquam officiis. Id, ullam inventore. </p>
                     <section className="dashboard__photo-section">
-                        <form encType='multipart/form-data' onSubmit={submitPhotoFormHandler}>
-                            <input className="file-input" type="file" name="singleFile" accept="image/png,image/jpeg,image/jpg,image/webp" onChange={changeFileHandler}/>
-                            <button>Sauvegarder</button>
+                        <form encType='multipart/form-data' onSubmit={submitPhotoFormHandler} className="multipart-form" onReset={resetFileHandler}>
+                            <article className="file-selector">
+                                <img src={placeholderProfile} alt="placeholder pour photo de profil" />
+                                <FontAwesomeIcon icon={faCloudArrowUp} className="icon"/>
+                                <input className="file-input" type="file" name="singleFile" accept="image/png,image/jpeg,image/jpg,image/webp" onChange={changeFileHandler}/>
+                            </article>
+                
+                            <section className="multipart-form__buttons">
+                                {showFileResetButton ? <button type="reset">Supprimer</button> : ""}
+                                <button type="submit"> Sauvegarder</button>
+                            </section>
+                          
                         </form>    
                     </section>  
                 </section>

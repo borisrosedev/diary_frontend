@@ -16,6 +16,12 @@ body {
     flex-direction: column;
 }
 
+img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
 ul, li {
     list-style: none;
     padding: 0;
@@ -332,6 +338,87 @@ figure {
 .dashboard__photo-section {
     display: flex;
     flex-direction: column;
+
+    .multipart-form {
+        display: flex;
+        justify-content: space-around;
+        button {
+            align-self: center;
+        }
+    }
+
+    .multipart-form__buttons {
+        display: flex;
+        flex-direction: column;
+
+        
+
+        button {
+            background-color: #f5f5dc;
+            margin-block: 5px;
+            padding: 8px 30px;
+            border-radius: 5px;
+            border: none;
+            outline: #fff 2px solid;
+    
+            &:hover {
+                outline: palevioletred 2px solid;
+                cursor: pointer;
+            }
+    
+        }
+    
+    }
+ 
+
+
+    .file-selector {
+        background-color: #000;
+        position: relative;
+        height: 100px;
+        width: 100px;
+        overflow: hidden;
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    
+
+        .icon {
+            z-index: 2;
+            bottom: 5px;
+            right: 5px;
+            position: absolute;
+            font-size: 20px;
+         
+        }
+
+        img {
+    
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            
+          
+        }
+
+    }
+
+ 
+
+    .file-input {
+        position: absolute;
+        z-index: 2;
+        width: 100px;
+        height: 100px;
+        border: solid 2px red;
+        transform: scale(2);
+        cursor: pointer;
+
+        
+    }
 }
 
 .dashboard__profile-form-section {
@@ -392,7 +479,3 @@ figure {
    
 }
 
-
-.file-input {
-    padding: 10px;
-}
